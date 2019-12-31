@@ -21,9 +21,9 @@ void Diff2Image();
 void CaptureVideo();
 
 void DetectActiveObjectFromVideo();
-void DoutaiKenchi(cv::Mat image1st, cv::Mat image2nd, cv::Mat image3rd);//動体検知
+std::vector<cv::Rect> DoutaiKenchi(cv::Mat image1st, cv::Mat image2nd, cv::Mat image3rd);//動体検知
 
-void SetImageBuf(cv::Mat newFrame);
+std::vector<cv::Rect> GetDiffRect(cv::Mat);
 
 #define BASE_IMAGE_PATH "C:\\Users\\s.hirano\\source\\repos\\OpenCV_test\\images\\"
 #define BASE_IMAGE_01 "C:\\Users\\s.hirano\\source\\repos\\OpenCV_test\\contents\\image\\circle_01.png"
@@ -31,6 +31,14 @@ void SetImageBuf(cv::Mat newFrame);
 #define BASE_MOVIE_01 "C:\\Users\\s.hirano\\source\\repos\\OpenCV_test\\contents\\video\\vtest.avi"
 
 #define OUTPUT_IMAGE_01 "C:\\Users\\s.hirano\\source\\repos\\OpenCV_test\\contents\\image\\output_01.png"
+
+///////////////////////////////////////////
+// 調整オプション
+// マスク時のサイズ
+const int MASK_SIZE = 5;
+// 動体検知サイズ
+const double OBJECT_SIZE_THREASHOLD = 100;
+
 
 int main()
 {
@@ -125,12 +133,23 @@ void DetectActiveObjectFromVideo()
 			// お試し枠描画
 			//cv::rectangle(frame, cv::Point(50, 50), cv::Point(100, 100), cv::Scalar(0, 0, 200), 3, 4);
 
-			* frame = gray.clone();
+			*frame = gray.clone();
 
-			DoutaiKenchi(frames[0], frames[1], frames[2]);//動体検知
+			std::vector<cv::Rect> rects = DoutaiKenchi(frames[0], frames[1], frames[2]);//動体検知
 
-
-			imshow("frame", *frame);
+			if (!rects.empty())
+			{
+				cv::Mat showFrame = frame->clone();
+				for (cv::Rect rect : rects)
+				{
+					cv::rectangle(showFrame, cv::Point(rect.x, rect.y), cv::Point(rect.x + rect.width, rect.y + rect.height), cv::Scalar(0, 0, 255), 3, 4);
+				}
+				imshow("frame", showFrame);
+			}
+			else
+			{
+				imshow("frame", *frame);
+			}
 		}
 		else
 		{
@@ -147,22 +166,20 @@ void DetectActiveObjectFromVideo()
 
 }
 
-void SetImageBuf(cv::Mat newFrame)
-{
-
-}
-
-
 //https://kimamani89.com/2019/04/30/post-420/
-void DoutaiKenchi(cv::Mat image1st, cv::Mat image2nd, cv::Mat image3rd)
+std::vector<cv::Rect> DoutaiKenchi(cv::Mat image1st, cv::Mat image2nd, cv::Mat image3rd)
 {
+	std::vector<cv::Rect> rects;
+
+	static int frameCnt;
+	frameCnt++;
 	if (image1st.empty() || image2nd.empty() || image3rd.empty())
 	{
 		//3枚の画像がそろってない場合は何もしない
 		std::cout << "Not ready(wait 3 frames).\n";
-		return;
+		return rects;
 	}
-
+	std::cout << "frame[" << frameCnt << "] proc.\n";
 	// 絶対値の求めたのち、背景差分を求める 
 	cv::Mat diff1,diff2;
 	cv::absdiff(image2nd, image1st, diff1);
@@ -179,17 +196,84 @@ void DoutaiKenchi(cv::Mat image1st, cv::Mat image2nd, cv::Mat image3rd)
 	cv::threshold(im, img_th, 10, 255, CV_THRESH_BINARY);
 
 	//膨張処理・収縮処理を施してマスク画像を生成
-	cv::Mat element(5, 5, CV_8U, cv::Scalar(1));
+	cv::Mat element(MASK_SIZE, MASK_SIZE, CV_8U, cv::Scalar(1));
 	cv::Mat img_dilate;
 	cv::dilate(img_th, img_dilate, element, cv::Point(-1, -1), 1);
 	cv::Mat mask;
 	cv::erode(img_dilate, mask, element, cv::Point(-1, -1), 1);
 
-	
-	imshow("mask", mask);
+	// マスク画像を使って対象を切り出す
+	cv::Mat img_dst;
+	cv::bitwise_and(image3rd, mask, img_dst);
+
+	//大きな差分の矩形を探す
+	rects = GetDiffRect(img_dst);
+
+
+	imshow("img_dst", img_dst);
+
+	return rects;
 }
 
+std::vector<cv::Rect> GetDiffRect(cv::Mat maskImage)
+{
+	// 検知物体の二次元配列
+	std::vector<std::vector<cv::Point> > contours;
 
+	// 物体領域の一次元配列
+	std::vector<cv::Rect> rects;
+
+	// 物体検知
+	cv::findContours(maskImage, contours, cv::RETR_CCOMP, cv::CHAIN_APPROX_SIMPLE);
+	for (std::vector<cv::Point>& points : contours)
+	{
+		//物体の面積取得
+		double areaSize = cv::contourArea(points);
+		// 小さい物体は無視する
+		if (areaSize > OBJECT_SIZE_THREASHOLD)
+		{
+			std::cout << "areaSize = " << areaSize << ".\n";
+			std::cout << "point size = " << points.size() << ".\n";
+
+			cv::Rect rect;
+
+			int top, bottom, left, right;
+			top = left = INT_MAX;
+			bottom = right = INT_MIN;
+
+			// 矩形の最小値/最大値を検査 (もっと簡単な方法がある予感)
+			for (cv::Point point : points)
+			{
+				if (top > point.y)
+				{
+					top = point.y;
+				}
+				if (bottom < point.y)
+				{
+					bottom = point.y;
+				}
+				if (left > point.x)
+				{
+					left = point.x;
+				}
+				if (right < point.x)
+				{
+					right = point.x;
+				}
+			}
+
+			rect.x = left;
+			rect.y = top;
+			rect.width = right - left;
+			rect.height = bottom - top;
+			printf("Rect x(%d) y(%d) w(%d) h(%d)\n", rect.x, rect.y, rect.width, rect.height);
+
+			rects.push_back(rect);
+		}
+	}
+	std::cout << "bigPoint size = " << rects.size() << ".\n";
+	return rects;
+}
 
 //動画を1フレームずつ画像に保存
 //https://teratail.com/questions/57801
