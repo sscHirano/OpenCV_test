@@ -12,7 +12,7 @@ void DetectActiveObjectFromVideo();
 std::vector<cv::Rect> DoutaiKenchi(cv::Mat image1st, cv::Mat image2nd, cv::Mat image3rd);//動体検知
 std::vector<cv::Rect> GetDiffRect(cv::Mat);
 
-#define BASE_MOVIE_01 "C:\\Users\\s.hirano\\source\\repos\\OpenCV_test\\contents\\video\\vtest.avi"
+#define BASE_MOVIE_01 ".\\contents\\video\\vtest.avi"
 
 ///////////////////////////////////////////
 // 調整オプション
