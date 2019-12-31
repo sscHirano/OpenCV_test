@@ -179,10 +179,11 @@ void DoutaiKenchi(cv::Mat image1st, cv::Mat image2nd, cv::Mat image3rd)
 	cv::threshold(im, img_th, 10, 255, CV_THRESH_BINARY);
 
 	//膨張処理・収縮処理を施してマスク画像を生成
+	cv::Mat element(5, 5, CV_8U, cv::Scalar(1));
 	cv::Mat img_dilate;
-	cv::dilate(img_th, img_dilate, cv::Mat(), cv::Point(-1, -1), 1);
+	cv::dilate(img_th, img_dilate, element, cv::Point(-1, -1), 1);
 	cv::Mat mask;
-	cv::erode(img_dilate, mask, cv::Mat(), cv::Point(-1, -1), 1);
+	cv::erode(img_dilate, mask, element, cv::Point(-1, -1), 1);
 
 	
 	imshow("mask", mask);
