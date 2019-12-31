@@ -23,6 +23,8 @@ void CaptureVideo();
 void DetectActiveObjectFromVideo();
 void DoutaiKenchi(cv::Mat image1st, cv::Mat image2nd, cv::Mat image3rd);//動体検知
 
+void SetImageBuf(cv::Mat newFrame);
+
 #define BASE_IMAGE_PATH "C:\\Users\\s.hirano\\source\\repos\\OpenCV_test\\images\\"
 #define BASE_IMAGE_01 "C:\\Users\\s.hirano\\source\\repos\\OpenCV_test\\contents\\image\\circle_01.png"
 #define BASE_IMAGE_02 "C:\\Users\\s.hirano\\source\\repos\\OpenCV_test\\contents\\image\\circle_02.png"
@@ -32,7 +34,7 @@ void DoutaiKenchi(cv::Mat image1st, cv::Mat image2nd, cv::Mat image3rd);//動体
 
 int main()
 {
-    std::cout << "Hello World!\n";
+//    std::cout << "Hello World!\n";
 
 	//赤いウィンドウ生成
 //	CreateColoerWindow();
@@ -93,13 +95,15 @@ void DetectActiveObjectFromVideo()
 		// TODO:高速化は実現できてから。(ポインタだけ変えればclone要らないはず)
 		
 		// 画像を手前に詰める
-		if (!frames[MAX_FRAME_NUM - 1].empty())
+		if (!frames[1].empty())
 		{
-			frames[MAX_FRAME_NUM - 2] = frames[MAX_FRAME_NUM - 1].clone();
+			// 2つ目を1つ目へ
+			frames[0] = frames[1].clone();
 		}
-		if (!frames[MAX_FRAME_NUM - 2].empty())
+		if (!frames[2].empty())
 		{
-			frames[MAX_FRAME_NUM - 3] = frames[MAX_FRAME_NUM - 2].clone();
+			// 3つ目を2つ目へ
+			frames[1] = frames[2].clone();
 		}
 
 		// 最新の位置に画像格納
@@ -108,17 +112,22 @@ void DetectActiveObjectFromVideo()
 		if (!frame->empty()) {
 			// frame取得成功
 						
+			//グレースケール化
 			cv::Mat gray;
 			cvtColor(*frame, gray, CV_BGR2GRAY);
-			cv::Mat bin;
-			cv::threshold(gray, bin, 64, 255, cv::THRESH_BINARY);//二値化画像化
-			imshow("gray", bin);
+			//imshow("gray", gray);
+
+			//画像の二値化
+			//cv::Mat bin;
+			//cv::threshold(gray, bin, 64, 255, cv::THRESH_BINARY);
+			//imshow("gray2", bin);
 
 			// お試し枠描画
 			//cv::rectangle(frame, cv::Point(50, 50), cv::Point(100, 100), cv::Scalar(0, 0, 200), 3, 4);
 
-			DoutaiKenchi(frames[0], frames[1], frames[2]);//動体検知
+			* frame = gray.clone();
 
+			DoutaiKenchi(frames[0], frames[1], frames[2]);//動体検知
 
 
 			imshow("frame", *frame);
@@ -138,9 +147,45 @@ void DetectActiveObjectFromVideo()
 
 }
 
-void DoutaiKenchi(cv::Mat image1st, cv::Mat image2nd, cv::Mat image3rd)
+void SetImageBuf(cv::Mat newFrame)
 {
 
+}
+
+
+//https://kimamani89.com/2019/04/30/post-420/
+void DoutaiKenchi(cv::Mat image1st, cv::Mat image2nd, cv::Mat image3rd)
+{
+	if (image1st.empty() || image2nd.empty() || image3rd.empty())
+	{
+		//3枚の画像がそろってない場合は何もしない
+		std::cout << "Not ready(wait 3 frames).\n";
+		return;
+	}
+
+	// 絶対値の求めたのち、背景差分を求める 
+	cv::Mat diff1,diff2;
+	cv::absdiff(image2nd, image1st, diff1);
+	//imshow("diff1", diff1);
+	cv::absdiff(image3rd, image2nd, diff2);
+	//imshow("diff2", diff2);
+
+	cv::Mat im;
+	// 背景差分から論理積の算出
+	cv::bitwise_and(diff1, diff2, im);
+
+	//二値化
+	cv::Mat img_th;
+	cv::threshold(im, img_th, 10, 255, CV_THRESH_BINARY);
+
+	//膨張処理・収縮処理を施してマスク画像を生成
+	cv::Mat img_dilate;
+	cv::dilate(img_th, img_dilate, cv::Mat(), cv::Point(-1, -1), 1);
+	cv::Mat mask;
+	cv::erode(img_dilate, mask, cv::Mat(), cv::Point(-1, -1), 1);
+
+	
+	imshow("mask", mask);
 }
 
 
