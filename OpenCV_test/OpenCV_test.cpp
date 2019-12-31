@@ -107,8 +107,7 @@ void DetectActiveObjectFromVideo()
 		vcap >> *frame;
 		if (!frame->empty()) {
 			// frame取得成功
-
-			
+						
 			cv::Mat gray;
 			cvtColor(*frame, gray, CV_BGR2GRAY);
 			cv::Mat bin;
