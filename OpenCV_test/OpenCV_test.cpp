@@ -32,8 +32,22 @@ int main()
 	// ファイルから起動モードを読み込む
 	Setting* setting = Setting::readSettingFile();
 
-	// 動画を1フレームずつ取得して、差分をチェックして、画像に差分を描画する。
-	DetectActiveObjectFromVideo();
+	Setting::EActiveMode activeMode = setting->getActiveMode();
+	switch (activeMode) {
+	case Setting::EActiveMode::E_MOVE_OBJECT_DETECTER_MODE:
+		// 動画を1フレームずつ取得して、差分をチェックして、画像に差分を描画する。
+		std::cout << "動体検知モード開始\n";
+		DetectActiveObjectFromVideo();
+		break;
+	case Setting::EActiveMode::E_OBJECT_TRACKER_MODE:
+		// 物体追跡モード
+		std::cout << "物体追跡モード開始\n";
+		DetectActiveObjectFromVideo();
+		break;
+	default:
+		std::cout << "モード異常 " << (int)activeMode << "\n";
+		break;
+	}
 
 	// 終了待ち
 	std::cout << "終了\n";

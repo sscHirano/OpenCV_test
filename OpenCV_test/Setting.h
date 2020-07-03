@@ -10,17 +10,22 @@ public:
 		E_OBJECT_TRACKER_MODE				// 物体追跡
 	};
 
-	/******************
-		ローカル変数
-	*******************/
-private:
-	EActiveMode activeMode = EActiveMode::E_OBJECT_TRACKER_MODE;
 
 	/******************
 		公開関数
 	*******************/
 public:
 	static Setting* readSettingFile();
+	EActiveMode getActiveMode()
+	{
+		return activeMode;
+	};
+
+	/******************
+		ローカル変数
+	*******************/
+private:
+	EActiveMode activeMode = EActiveMode::E_OBJECT_TRACKER_MODE;
 
 	/******************
 		内部関数
