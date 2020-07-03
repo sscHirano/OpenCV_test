@@ -7,6 +7,9 @@
 #include <opencv2/imgproc.hpp>		// cv:circle
 #include <opencv2/imgproc/types_c.h>	// CV_BGR2GRAY
 
+// local include
+#include "Setting.h"
+
 //関数宣言
 void DetectActiveObjectFromVideo();
 std::vector<cv::Rect> DoutaiKenchi(cv::Mat image1st, cv::Mat image2nd, cv::Mat image3rd);//動体検知
@@ -25,6 +28,9 @@ const double OBJECT_SIZE_THREASHOLD = 100;
 int main()
 {
 //    std::cout << "Hello World!\n";
+
+	// ファイルから起動モードを読み込む
+	Setting* setting = Setting::readSettingFile();
 
 	// 動画を1フレームずつ取得して、差分をチェックして、画像に差分を描画する。
 	DetectActiveObjectFromVideo();
