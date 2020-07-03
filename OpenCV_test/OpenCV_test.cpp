@@ -47,7 +47,10 @@ int main()
 //
 void DetectActiveObjectFromVideo()
 {
- 	cv::VideoCapture vcap(BASE_MOVIE_01);
+	// 動画ファイル
+	//cv::VideoCapture vcap(BASE_MOVIE_01);
+	//カメラデバイス
+	cv::VideoCapture vcap(0);//デバイスのオープン
 	if (!vcap.isOpened())
 	{
 		std::cout << "Can't open video.\n";
