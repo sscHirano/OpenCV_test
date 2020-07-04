@@ -1,4 +1,7 @@
 #pragma once
+
+#include "MoveDetectSetting.h"
+
 class Setting
 {
 	/******************
@@ -10,22 +13,31 @@ public:
 		E_OBJECT_TRACKER_MODE				// 物体追跡
 	};
 
+	/******************
+		公開変数
+	*******************/
+	// 動体検知設定
+	MoveDetectSetting moveDetectSetting;
+
+	// 物体追跡設定
 
 	/******************
 		公開関数
 	*******************/
 public:
-	static Setting* readSettingFile();
+	static Setting readSettingFile();
 	EActiveMode getActiveMode()
 	{
 		return activeMode;
 	};
 
 	/******************
-		ローカル変数
+		ローカル変数(設定値)
 	*******************/
 private:
+	// 動作モード
 	EActiveMode activeMode = EActiveMode::E_OBJECT_TRACKER_MODE;
+
 
 	/******************
 		内部関数

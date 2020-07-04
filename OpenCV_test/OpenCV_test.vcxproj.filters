@@ -13,18 +13,36 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="ソース ファイル\Settings">
+      <UniqueIdentifier>{691ed985-ed97-47db-942c-13bb09bb9813}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\Settings">
+      <UniqueIdentifier>{5bce60b6-d1ad-4876-bdfc-4649d9897c15}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="OpenCV_test.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Setting.cpp">
+    <ClCompile Include="MoveDetector.cpp">
       <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="MoveDetectSetting.cpp">
+      <Filter>ソース ファイル\Settings</Filter>
+    </ClCompile>
+    <ClCompile Include="Setting.cpp">
+      <Filter>ソース ファイル\Settings</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Setting.h">
       <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="MoveDetector.h">
+      <Filter>ヘッダー ファイル\Settings</Filter>
+    </ClInclude>
+    <ClInclude Include="MoveDetectSetting.h">
+      <Filter>ヘッダー ファイル\Settings</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

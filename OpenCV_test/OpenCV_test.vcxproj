@@ -157,10 +157,14 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="MoveDetector.cpp" />
+    <ClCompile Include="MoveDetectSetting.cpp" />
     <ClCompile Include="OpenCV_test.cpp" />
     <ClCompile Include="Setting.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="MoveDetector.h" />
+    <ClInclude Include="MoveDetectSetting.h" />
     <ClInclude Include="Setting.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
