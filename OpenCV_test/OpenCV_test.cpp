@@ -16,8 +16,6 @@ void trackObject(CommonSetting commonSetting, ObjectTrackSetting objectTrackSett
 
 int main()
 {
-//    std::cout << "Hello World!\n";
-
 	// ファイルから起動モードを読み込む
 	Setting setting = Setting::readSettingFile();
 

@@ -9,12 +9,17 @@ Setting Setting::readSettingFile()
 	Setting setting;
 	//※デフォルト値を設定済みのため、割愛
 	//setting.activeMode = EActiveMode::E_MOVE_OBJECT_DETECTER_MODE;
-	//setting.activeMode = EActiveMode::E_OBJECT_TRACKER_MODE;
+	setting.activeMode = EActiveMode::E_OBJECT_TRACKER_MODE;
 
 	// 動体検知設定
 	//※デフォルト値を設定済みのため、割愛
 
 	// 物体追跡設定
-		
+	setting.objectTrackSetting.enableTrackKcf = false;
+	setting.objectTrackSetting.enableTrackTld = false;
+	setting.objectTrackSetting.enableTrackMedianFlow = true;
+	setting.objectTrackSetting.enableTrackBoosting = false;
+	setting.objectTrackSetting.enableTrackMil = false;
+
 	return setting;
 }
