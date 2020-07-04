@@ -10,6 +10,8 @@
 #include "CommonSetting.h"
 #include "ObjectTrackSetting.h"
 
+class TargetInfo;
+
 class ObjectTracker
 {
 public:
@@ -29,6 +31,15 @@ public:
 
 
 private:
+	TargetInfo searchTargetObject(cv::VideoCapture cap);
+	void searchTargetInternal(cv::Mat frame, cv::Mat targetImage);
 	void update(cv::Ptr<cv::Tracker> tracker, cv::Mat& frame, cv::Rect2d& roi, cv::Scalar& colorkcf);
+};
+
+class TargetInfo
+{
+public:
+	cv::Mat frame;
+	cv::Rect2d roi;
 };
 
