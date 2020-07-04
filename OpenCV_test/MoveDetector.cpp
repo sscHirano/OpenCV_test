@@ -90,19 +90,20 @@ void MoveDetector::DetectActiveObjectFromVideo()
 cv::VideoCapture MoveDetector::getVideoCapture()
 {
 	cv::VideoCapture vcap;
-	switch (setting.inputType) {
-	case MoveDetectSetting::EMoveDetectInputType::E_MOVE_DETECT_INPUT_TYPE_CAMERA:
+	switch (commonSetting.inputType) {
+	case CommonSetting::EInputType::E_INPUT_TYPE_CAMERA:
 		//カメラデバイスのオープン
-		vcap.open(setting.inputCameraDeviceNo);
+		std::cout << "動体検知インプットカメラNo " << commonSetting.inputCameraDeviceNo << "\n";
+		vcap.open(commonSetting.inputCameraDeviceNo);
 		break;
-	case MoveDetectSetting::EMoveDetectInputType::E_MOVE_DETECT_INPUT_TYPE_FILE:
-		std::cout << "動体検知インプットファイル " << setting.inputFilePath << "\n";
+	case CommonSetting::EInputType::E_INPUT_TYPE_FILE:
+		std::cout << "動体検知インプットファイル " << commonSetting.inputFilePath << "\n";
 		//動画ファイルのオープン
-		vcap.open(setting.inputFilePath);
+		vcap.open(commonSetting.inputFilePath);
 		break;
 	default:
 		// 異常
-		std::cout << "動体検知インプット種別異常 " << (int)setting.inputType << "\n";
+		std::cout << "動体検知インプット種別異常 " << (int)commonSetting.inputType << "\n";
 		assert(false);
 	}
 	return vcap;
@@ -139,7 +140,7 @@ std::vector<cv::Rect> MoveDetector::detectMoveObject(cv::Mat image1st, cv::Mat i
 	cv::threshold(im, img_th, 10, 255, CV_THRESH_BINARY);
 
 	//膨張処理・収縮処理を施してマスク画像を生成
-	cv::Mat element(setting.maskSize, setting.maskSize, CV_8U, cv::Scalar(1));
+	cv::Mat element(moveDetectSetting.maskSize, moveDetectSetting.maskSize, CV_8U, cv::Scalar(1));
 	cv::Mat img_dilate;
 	cv::dilate(img_th, img_dilate, element, cv::Point(-1, -1), 1);
 	cv::Mat mask;
@@ -173,7 +174,7 @@ std::vector<cv::Rect> MoveDetector::GetDiffRect(cv::Mat maskImage)
 		//物体の面積取得
 		double areaSize = cv::contourArea(points);
 		// 小さい物体は無視する
-		if (areaSize > setting.moveDetectThresholdSize)
+		if (areaSize > moveDetectSetting.moveDetectThresholdSize)
 		{
 			std::cout << "areaSize = " << areaSize << ".\n";
 			std::cout << "point size = " << points.size() << ".\n";

@@ -8,15 +8,9 @@
 #include "MoveDetector.h"
 
 //関数宣言
-void DetectActiveObjectFromVideo(MoveDetectSetting setting);
+void DetectActiveObjectFromVideo(CommonSetting commonSetting, MoveDetectSetting moveDetectsetting);
 
 ///////////////////////////////////////////
-// 調整オプション
-// マスク時のサイズ
-const int MASK_SIZE = 5;
-// 動体検知サイズ
-const double OBJECT_SIZE_THREASHOLD = 100;
-
 
 int main()
 {
@@ -30,7 +24,7 @@ int main()
 	case Setting::EActiveMode::E_MOVE_OBJECT_DETECTER_MODE:
 		// 動画を1フレームずつ取得して、差分をチェックして、画像に差分を描画する。
 		std::cout << "動体検知モード開始\n";
-		DetectActiveObjectFromVideo(setting.moveDetectSetting);
+		DetectActiveObjectFromVideo(setting.commonSetting, setting.moveDetectSetting);
 		break;
 	case Setting::EActiveMode::E_OBJECT_TRACKER_MODE:
 		// 物体追跡モード
@@ -43,7 +37,7 @@ int main()
 	}
 
 	// 終了待ち
-	std::cout << "終了\n";
+	std::cout << "終了(Press Enter.)\n";
 	getchar();
 
 	// 後処理
@@ -53,9 +47,9 @@ int main()
 /*
 	動体検知実行
  */
-void DetectActiveObjectFromVideo(MoveDetectSetting setting)
+void DetectActiveObjectFromVideo(CommonSetting commonSetting, MoveDetectSetting moveDetectSetting)
 {
-	MoveDetector moveDetector(setting);
+	MoveDetector moveDetector(commonSetting, moveDetectSetting);
 	moveDetector.DetectActiveObjectFromVideo();
 	return;
 }

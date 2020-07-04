@@ -1,5 +1,6 @@
 #pragma once
 
+#include "CommonSetting.h"
 #include "MoveDetectSetting.h"
 
 class Setting
@@ -16,6 +17,9 @@ public:
 	/******************
 		ŒöŠJ•Ï”
 	*******************/
+	// ‹¤’Êİ’è
+	CommonSetting commonSetting;
+
 	// “®‘ÌŒŸ’mİ’è
 	MoveDetectSetting moveDetectSetting;
 

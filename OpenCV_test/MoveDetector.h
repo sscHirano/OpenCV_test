@@ -3,6 +3,7 @@
 #include <iostream>
 #include <opencv2/highgui.hpp> // highguiモジュールのヘッダーをインクルード
 
+#include "CommonSetting.h"
 #include "MoveDetectSetting.h"
 
 class MoveDetector
@@ -16,15 +17,18 @@ class MoveDetector
 		公開関数
 	*******************/
 public:
-	MoveDetector(MoveDetectSetting _setting)
+	MoveDetector(CommonSetting _commonSetting, MoveDetectSetting _moveDetectSetting)
 	{
-		setting = _setting;
+		commonSetting = _commonSetting;
+		moveDetectSetting = _moveDetectSetting;
 	};
 	void DetectActiveObjectFromVideo();
 
 private:
-	// 設定値
-	MoveDetectSetting setting;
+	// 共通設定
+	CommonSetting commonSetting;
+	// 動体検知設定
+	MoveDetectSetting moveDetectSetting;
 
 private:
 	// インプット設定に応じたVideoCaptureを取得

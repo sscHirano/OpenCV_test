@@ -33,6 +33,9 @@
     <ClCompile Include="Setting.cpp">
       <Filter>ソース ファイル\Settings</Filter>
     </ClCompile>
+    <ClCompile Include="CommonSetting.cpp">
+      <Filter>ソース ファイル\Settings</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Setting.h">
@@ -42,6 +45,9 @@
       <Filter>ヘッダー ファイル\Settings</Filter>
     </ClInclude>
     <ClInclude Include="MoveDetectSetting.h">
+      <Filter>ヘッダー ファイル\Settings</Filter>
+    </ClInclude>
+    <ClInclude Include="CommonSetting.h">
       <Filter>ヘッダー ファイル\Settings</Filter>
     </ClInclude>
   </ItemGroup>

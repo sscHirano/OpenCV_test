@@ -8,7 +8,7 @@ Setting Setting::readSettingFile()
 	// 共通設定
 	Setting setting;
 	//※デフォルト値を設定済みのため、割愛
-	setting.activeMode = EActiveMode::E_MOVE_OBJECT_DETECTER_MODE;
+	//setting.activeMode = EActiveMode::E_MOVE_OBJECT_DETECTER_MODE;
 	//setting.activeMode = EActiveMode::E_OBJECT_TRACKER_MODE;
 
 	// 動体検知設定
