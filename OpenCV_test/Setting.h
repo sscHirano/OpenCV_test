@@ -2,6 +2,7 @@
 
 #include "CommonSetting.h"
 #include "MoveDetectSetting.h"
+#include "ObjectTrackSetting.h"
 
 class Setting
 {
@@ -24,6 +25,7 @@ public:
 	MoveDetectSetting moveDetectSetting;
 
 	// •¨‘Ì’ÇÕİ’è
+	ObjectTrackSetting objectTrackSetting;
 
 	/******************
 		ŒöŠJŠÖ”

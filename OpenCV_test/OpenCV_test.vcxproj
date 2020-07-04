@@ -160,14 +160,18 @@
     <ClCompile Include="CommonSetting.cpp" />
     <ClCompile Include="MoveDetector.cpp" />
     <ClCompile Include="MoveDetectSetting.cpp" />
+    <ClCompile Include="ObjectTracker.cpp" />
     <ClCompile Include="OpenCV_test.cpp" />
     <ClCompile Include="Setting.cpp" />
+    <ClCompile Include="ObjectTrackSetting.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CommonSetting.h" />
     <ClInclude Include="MoveDetector.h" />
     <ClInclude Include="MoveDetectSetting.h" />
+    <ClInclude Include="ObjectTracker.h" />
     <ClInclude Include="Setting.h" />
+    <ClInclude Include="ObjectTrackSetting.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -19,16 +19,22 @@
     <Filter Include="ヘッダー ファイル\Settings">
       <UniqueIdentifier>{5bce60b6-d1ad-4876-bdfc-4649d9897c15}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\MoveDetector">
+      <UniqueIdentifier>{1e63f4d0-a401-40ed-ada3-9f52856fa2a3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\MoveDetector">
+      <UniqueIdentifier>{2bb0b379-25ad-4955-adcd-d6a145e01a48}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\TrackingObject">
+      <UniqueIdentifier>{a6e48626-9364-4fb4-9bd9-bf26bcc47799}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\ObjectTracker">
+      <UniqueIdentifier>{319e9efa-6a26-443f-9023-480a6dfe3dfe}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="OpenCV_test.cpp">
       <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="MoveDetector.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="MoveDetectSetting.cpp">
-      <Filter>ソース ファイル\Settings</Filter>
     </ClCompile>
     <ClCompile Include="Setting.cpp">
       <Filter>ソース ファイル\Settings</Filter>
@@ -36,19 +42,37 @@
     <ClCompile Include="CommonSetting.cpp">
       <Filter>ソース ファイル\Settings</Filter>
     </ClCompile>
+    <ClCompile Include="MoveDetector.cpp">
+      <Filter>ソース ファイル\MoveDetector</Filter>
+    </ClCompile>
+    <ClCompile Include="MoveDetectSetting.cpp">
+      <Filter>ソース ファイル\MoveDetector</Filter>
+    </ClCompile>
+    <ClCompile Include="ObjectTrackSetting.cpp">
+      <Filter>ソース ファイル\TrackingObject</Filter>
+    </ClCompile>
+    <ClCompile Include="ObjectTracker.cpp">
+      <Filter>ソース ファイル\TrackingObject</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Setting.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="MoveDetector.h">
-      <Filter>ヘッダー ファイル\Settings</Filter>
-    </ClInclude>
-    <ClInclude Include="MoveDetectSetting.h">
-      <Filter>ヘッダー ファイル\Settings</Filter>
-    </ClInclude>
     <ClInclude Include="CommonSetting.h">
       <Filter>ヘッダー ファイル\Settings</Filter>
+    </ClInclude>
+    <ClInclude Include="Setting.h">
+      <Filter>ヘッダー ファイル\Settings</Filter>
+    </ClInclude>
+    <ClInclude Include="MoveDetector.h">
+      <Filter>ヘッダー ファイル\MoveDetector</Filter>
+    </ClInclude>
+    <ClInclude Include="MoveDetectSetting.h">
+      <Filter>ヘッダー ファイル\MoveDetector</Filter>
+    </ClInclude>
+    <ClInclude Include="ObjectTrackSetting.h">
+      <Filter>ヘッダー ファイル\ObjectTracker</Filter>
+    </ClInclude>
+    <ClInclude Include="ObjectTracker.h">
+      <Filter>ヘッダー ファイル\ObjectTracker</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

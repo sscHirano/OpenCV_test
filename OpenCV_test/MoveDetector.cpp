@@ -13,7 +13,7 @@
 // D. 2枚の差分画像の論理積を計算し、論理積画像を作成する
 // E.論理積画像に二値化処理を行い、背景と前景に分けたマスク画像を作成する
 //
-void MoveDetector::DetectActiveObjectFromVideo()
+void MoveDetector::startDetectingActiveObject()
 {
 	// インプット設定に応じたVideoCaptureを取得
 	cv::VideoCapture vcap = getVideoCapture();

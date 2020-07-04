@@ -22,7 +22,8 @@ public:
 		commonSetting = _commonSetting;
 		moveDetectSetting = _moveDetectSetting;
 	};
-	void DetectActiveObjectFromVideo();
+	// “®‘ÌŒŸ’mŠJn
+	void startDetectingActiveObject();
 
 private:
 	// ‹¤’Êİ’è
