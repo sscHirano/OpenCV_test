@@ -31,8 +31,13 @@ public:
 
 
 private:
-	TargetInfo searchTargetObject(cv::VideoCapture cap);
-	void searchTargetInternal(cv::Mat frame, cv::Mat targetImage);
+	//パターンマッチング
+	TargetInfo trackPatternMatching(cv::VideoCapture cap);
+	void trackPatternMatchingInternal(cv::Mat frame, cv::Mat targetImage);
+
+
+	// 物体追跡
+	void trackObject(cv::VideoCapture cap);
 	void update(cv::Ptr<cv::Tracker> tracker, cv::Mat& frame, cv::Rect2d& roi, cv::Scalar& colorkcf);
 };
 

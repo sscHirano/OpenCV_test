@@ -15,11 +15,14 @@ Setting Setting::readSettingFile()
 	//※デフォルト値を設定済みのため、割愛
 
 	// 物体追跡設定
-	setting.objectTrackSetting.enableTrackKcf = false;
+	setting.objectTrackSetting.enableTrackKcf = true;
 	setting.objectTrackSetting.enableTrackTld = false;
-	setting.objectTrackSetting.enableTrackMedianFlow = true;
+	setting.objectTrackSetting.enableTrackMedianFlow = false;
 	setting.objectTrackSetting.enableTrackBoosting = false;
 	setting.objectTrackSetting.enableTrackMil = false;
+
+	setting.objectTrackSetting.trackingMode = ObjectTrackSetting::ETrackingMode::E_PATARN_MATCH;	//パターンマッチング
+//	setting.objectTrackSetting.trackingMode = ObjectTrackSetting::ETrackingMode::E_OBJECT_TRACK;	//トラッキング
 
 	return setting;
 }
