@@ -16,7 +16,19 @@
 void ObjectTracker::startTracking()
 {
     // inputオープン
-    cv::VideoCapture cap(0);
+    cv::VideoCapture cap;
+
+    if (commonSetting.inputType == CommonSetting::EInputType::E_INPUT_TYPE_CAMERA)
+    {
+        // カメラ
+        cap.open(0);
+    }
+    else
+    {
+        // 動画
+        cap.open(commonSetting.inputFilePath);
+    }
+
     if (!cap.isOpened()) {
         std::cout << "ビデオが開けません。" << std::endl;
         return;
@@ -48,11 +60,12 @@ TargetInfo ObjectTracker::trackPatternMatching(cv::VideoCapture cap)
     cv::Mat targetImage = cv::imread(objectTrackSetting.targetFilePath);
 
     cv::imshow("targetImage", targetImage);
+    cap >> frame;
+    cv::VideoWriter writer = startWriteVideo(frame);
 
     // 物体を探す。
     while (1) {
         //std::cout << "next frame.\n";
-        cap >> frame;
         if (frame.empty())
         {
             std::cout << "frame empty in search target loop.\n";
@@ -60,15 +73,54 @@ TargetInfo ObjectTracker::trackPatternMatching(cv::VideoCapture cap)
         }
         trackPatternMatchingInternal(frame, targetImage);
 
+        //動画保存
+        writeVideo(writer, frame);
+
         cv::imshow("trackPatternMatching", frame);
         int key = cv::waitKey(1);
         if (key == 0x1b) //ESCキー
             break;
+
+        // 次フレーム読み込み
+        cap >> frame;
     }
     return targetInfo;
 }
 
-void ObjectTracker::trackPatternMatchingInternal(cv::Mat frame, cv::Mat targetImage)
+cv::VideoWriter ObjectTracker::startWriteVideo(cv::Mat &frame)
+{
+    if (!objectTrackSetting.enableSaveVideo)
+    {
+        //保存しない設定。
+        cv::VideoWriter nowrite;
+        return nowrite;
+    }
+    int    fourcc = cv::VideoWriter::fourcc('X', 'V', 'I', 'D'); // コーデックを指定 
+    double fps = 30.0;   // 動画のフレームレートを指定
+    bool   isColor = true;   // カラーで保存するか否か
+
+    // 出力する動画ファイルの設定
+    cv::VideoWriter writer(objectTrackSetting.saveVideoPath, fourcc, fps, frame.size(), isColor);
+
+    // 動画ファイルの初期化に成功したか判定
+    if (!writer.isOpened()) {
+        std::cout << "Can't VideoWriter open" << std::endl;
+        assert(false);
+    }
+    return writer;
+}
+
+void ObjectTracker::writeVideo(cv::VideoWriter writer, cv::Mat& frame)
+{
+    if (!writer.isOpened())
+    {
+        return;
+    }
+    // 動画ファイルに出力
+    writer << frame;
+}
+
+void ObjectTracker::trackPatternMatchingInternal(cv::Mat &frame, cv::Mat &targetImage)
 {
     cv::Mat result;
     // テンプレートと，それに重なった画像領域とを比較
@@ -76,7 +128,7 @@ void ObjectTracker::trackPatternMatchingInternal(cv::Mat frame, cv::Mat targetIm
         frame,               // テンプレートの探索対象となる画像．8ビットまたは32ビットの浮動小数点型．
         targetImage,         // 探索されるテンプレート．探索対象となる画像以下のサイズで，同じデータ型でなければならない
         result,              // 比較結果のマップ
-        CV_TM_SQDIFF_NORMED  // 比較手法
+        objectTrackSetting.matchMeathod  // 比較手法
         );
 
     double val;
@@ -84,9 +136,15 @@ void ObjectTracker::trackPatternMatchingInternal(cv::Mat frame, cv::Mat targetIm
 
     // 配列全体あるいは部分配列に対する，大域的最小値
     cv::minMaxLoc(result, &val, nullptr, &pt, nullptr);
-    std::cout << "minmax:" << val <<"\n";
+
+    cv::Point targetPoint = pt + cv::Point(targetImage.cols, targetImage.rows);
+
+    //TODO:とりあえず左上の座標を出しているが、本来は中心点を求めるべき。
+    std::cout << "x:" << targetPoint.x << " y:" << targetPoint.y << "\n";
+
+    //std::cout << "minmax:" << val <<"\n";
     // 結果が小さいほど一致率が高いと判断する
-    if (val < 0.3)
+    //if (val < objectTrackSetting.matchThreashold)
     {
         // 矩形を描画
         cv::rectangle(frame,
@@ -97,14 +155,6 @@ void ObjectTracker::trackPatternMatchingInternal(cv::Mat frame, cv::Mat targetIm
             cv::LINE_8                            // 枠線の種類
         );
     }
-
-    //cv::namedWindow("frame", 1);
-    //imshow("frame", frame);
-
-    //cv::namedWindow("targetImage", 1);
-    //cv::imshow("targetImage", targetImage);
-
-//    cv::waitKey(0);
 }
 
 void ObjectTracker::trackObject(cv::VideoCapture cap)

@@ -16,7 +16,7 @@ void trackObject(CommonSetting commonSetting, ObjectTrackSetting objectTrackSett
 
 int main()
 {
-	// ファイルから起動モードを読み込む
+	// ファイルから設定を読み込む
 	Setting setting = Setting::readSettingFile();
 
 	Setting::EActiveMode activeMode = setting.getActiveMode();

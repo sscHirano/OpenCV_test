@@ -2,6 +2,8 @@
 
 #include <string>
 
+#include <opencv2/tracking/tracker.hpp>
+
 class ObjectTrackSetting
 {
 public:
@@ -20,5 +22,15 @@ public:
 
 	//ターゲット画像ファイルパス
 	std::string targetFilePath = "C:\\work\\OpenCV\\contents\\追跡対象.png";
+	// パターンマッチングの手法
+	int matchMeathod = CV_TM_SQDIFF_NORMED;
+
+	// パターンマッチングの閾値
+	double matchThreashold = 0.2;
+
+	/////////////////////////////////////////////
+	// 動画保存
+	bool enableSaveVideo = true;
+	std::string saveVideoPath = "C:\\work\\OpenCV\\contents\\output\\save_video.avi";
 };
 

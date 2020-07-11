@@ -33,12 +33,17 @@ public:
 private:
 	//パターンマッチング
 	TargetInfo trackPatternMatching(cv::VideoCapture cap);
-	void trackPatternMatchingInternal(cv::Mat frame, cv::Mat targetImage);
+	void trackPatternMatchingInternal(cv::Mat &frame, cv::Mat &targetImage);
 
 
 	// 物体追跡
 	void trackObject(cv::VideoCapture cap);
 	void update(cv::Ptr<cv::Tracker> tracker, cv::Mat& frame, cv::Rect2d& roi, cv::Scalar& colorkcf);
+
+	// 動画保存
+	cv::VideoWriter startWriteVideo(cv::Mat& frame);
+	void writeVideo(cv::VideoWriter writer, cv::Mat& frame);
+
 };
 
 class TargetInfo
