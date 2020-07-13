@@ -41,7 +41,7 @@ private:
 	void update(cv::Ptr<cv::Tracker> tracker, cv::Mat& frame, cv::Rect2d& roi, cv::Scalar& colorkcf);
 
 	// “®‰æ•Û‘¶
-	cv::VideoWriter startWriteVideo(cv::Mat& frame);
+	cv::VideoWriter startWriteVideo(cv::Size size);
 	void writeVideo(cv::VideoWriter writer, cv::Mat& frame);
 
 };

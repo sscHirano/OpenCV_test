@@ -61,7 +61,12 @@ TargetInfo ObjectTracker::trackPatternMatching(cv::VideoCapture cap)
 
     cv::imshow("targetImage", targetImage);
     cap >> frame;
-    cv::VideoWriter writer = startWriteVideo(frame);
+    int cutLeft = 300;
+    int cutRight = 200;
+    int cutTop = 50;
+    int cutBottom = 50;
+    cv::Size frameSize = cv::Size(frame.cols - cutLeft - cutRight, frame.rows - cutTop - cutBottom);
+    cv::VideoWriter writer = startWriteVideo(frameSize);
 
     // 物体を探す。
     while (1) {
@@ -71,6 +76,9 @@ TargetInfo ObjectTracker::trackPatternMatching(cv::VideoCapture cap)
             std::cout << "frame empty in search target loop.\n";
             break;
         }
+        // 余分な領域を削除してから画像検索する。
+        frame = frame(cv::Rect(cutLeft, cutTop, frame.cols - cutLeft - cutRight, frame.rows - cutTop - cutBottom));
+
         trackPatternMatchingInternal(frame, targetImage);
 
         //動画保存
@@ -87,7 +95,7 @@ TargetInfo ObjectTracker::trackPatternMatching(cv::VideoCapture cap)
     return targetInfo;
 }
 
-cv::VideoWriter ObjectTracker::startWriteVideo(cv::Mat &frame)
+cv::VideoWriter ObjectTracker::startWriteVideo(cv::Size size)
 {
     if (!objectTrackSetting.enableSaveVideo)
     {
@@ -100,7 +108,7 @@ cv::VideoWriter ObjectTracker::startWriteVideo(cv::Mat &frame)
     bool   isColor = true;   // カラーで保存するか否か
 
     // 出力する動画ファイルの設定
-    cv::VideoWriter writer(objectTrackSetting.saveVideoPath, fourcc, fps, frame.size(), isColor);
+    cv::VideoWriter writer(objectTrackSetting.saveVideoPath, fourcc, fps, size, isColor);
 
     // 動画ファイルの初期化に成功したか判定
     if (!writer.isOpened()) {
