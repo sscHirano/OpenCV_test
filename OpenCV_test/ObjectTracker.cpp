@@ -2,7 +2,7 @@
 
 #include <iostream>
 
-#if 1
+#if 0
 #pragma comment(lib, "opencv_core412.lib")
 #pragma comment(lib, "opencv_imgcodecs412.lib")
 #pragma comment(lib, "opencv_videoio412.lib")
@@ -122,10 +122,39 @@ void ObjectTracker::writeVideo(cv::VideoWriter writer, cv::Mat& frame)
 
 void ObjectTracker::trackPatternMatchingInternal(cv::Mat &frame, cv::Mat &targetImage)
 {
-    cv::Mat result;
+
+    //探索範囲を狭める対応
+    static int x = 0;
+    static int y = 0;
+
+    // 前回のパターンマッチエリアより少し大きいエリアから探索する
+    int searchExPixel = 100;
+    // xから探索拡大ピクセル数を引く。0より小さければ、0にする
+    x = (x - searchExPixel < 0) ? 0 : x - searchExPixel;
+    y = (y - searchExPixel < 0) ? 0 : y - searchExPixel;
+
+    // 開始地点が0なら全エリア探索。そうでなければ、見つけたエリアより少し大きいエリアを対象とする
+    int width = (x == 0) ? frame.cols : targetImage.cols + searchExPixel * 2; //開始地点はserchExpixel分引いているので、終点は、2倍足す
+    int height = (y == 0) ? frame.rows : targetImage.rows + searchExPixel * 2;
+
+
+    // 探索範囲を狭めるための画像切り抜き
+    // 範囲オーバーしたら補正する
+    if ((x + width > frame.cols) || (y + height > frame.rows))
+    {
+        x = y = 0;
+        width = frame.cols;
+        height = frame.rows;
+    }
+        
+    std::cout << "x:" << x << " y:" << y << " width:" << width << " height:" << height << "\n";
+    cv::Mat cutFrame = frame(cv::Rect(x, y, width, height));
+    cv::imshow("cutFrame", cutFrame);
+
     // テンプレートと，それに重なった画像領域とを比較
+    cv::Mat result;
     cv::matchTemplate(
-        frame,               // テンプレートの探索対象となる画像．8ビットまたは32ビットの浮動小数点型．
+        cutFrame,               // テンプレートの探索対象となる画像．8ビットまたは32ビットの浮動小数点型．
         targetImage,         // 探索されるテンプレート．探索対象となる画像以下のサイズで，同じデータ型でなければならない
         result,              // 比較結果のマップ
         objectTrackSetting.matchMeathod  // 比較手法
@@ -137,10 +166,13 @@ void ObjectTracker::trackPatternMatchingInternal(cv::Mat &frame, cv::Mat &target
     // 配列全体あるいは部分配列に対する，大域的最小値
     cv::minMaxLoc(result, &val, nullptr, &pt, nullptr);
 
-    cv::Point targetPoint = pt + cv::Point(targetImage.cols, targetImage.rows);
+    // ptは、カットした画像から位置を求めているため、元の画像の座標に戻す
+    pt.x += x;
+    pt.y += y;
 
     //TODO:とりあえず左上の座標を出しているが、本来は中心点を求めるべき。
-    std::cout << "x:" << targetPoint.x << " y:" << targetPoint.y << "\n";
+    //cv::Point targetPoint = pt + cv::Point(targetImage.cols, targetImage.rows);
+    std::cout << "x:" << pt.x << " y:" << pt.y << "\n";
 
     //std::cout << "minmax:" << val <<"\n";
     // 結果が小さいほど一致率が高いと判断する
@@ -155,6 +187,10 @@ void ObjectTracker::trackPatternMatchingInternal(cv::Mat &frame, cv::Mat &target
             cv::LINE_8                            // 枠線の種類
         );
     }
+
+    // 次回の探索を覚えるため、位置を記憶
+    x = pt.x;
+    y = pt.y;
 }
 
 void ObjectTracker::trackObject(cv::VideoCapture cap)
