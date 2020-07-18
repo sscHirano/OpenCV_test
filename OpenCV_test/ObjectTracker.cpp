@@ -163,7 +163,8 @@ void ObjectTracker::trackPatternMatchingInternal(cv::Mat &frame, cv::Mat &target
     cv::Mat binFrame = convertColor2Monochrome(cutFrame);
     cv::Mat binTaget = convertColor2Monochrome(targetImage);       //TODO:ターゲットイメージは毎回同じ画像なので、これを毎回2値化するのは無駄。
     //デバッグ用切り取りフレーム表示
-    cv::imshow("cutFrame(2)", binFrame);
+    cv::imshow("(edge)cutFrame", binFrame);
+    cv::imshow("(edge)target frame", binTaget);
 
     // テンプレートと，それに重なった画像領域とを比較
     cv::Mat result;
@@ -227,7 +228,10 @@ cv::Mat ObjectTracker::convertColor2Monochrome(cv::Mat& image)
 
     //グレースケールから2値化
 //    threshold(gray_img, bin_img, 160, 255, cv::THRESH_BINARY);                    // 160を閾値に2値化
-    threshold(gray_img, bin_img, 0, 255, cv::THRESH_BINARY | cv::THRESH_OTSU);    // 自動で閾値を決めて2値化
+    //threshold(gray_img, bin_img, 0, 255, cv::THRESH_BINARY | cv::THRESH_OTSU);    // 自動で閾値を決めて2値化
+
+    // エッジ検出
+    cv::Canny(gray_img, bin_img, 125, 255);
 
     return bin_img;
 }
