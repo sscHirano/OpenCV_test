@@ -157,7 +157,8 @@ void ObjectTracker::trackPatternMatchingInternal(cv::Mat &frame, cv::Mat &target
         
     std::cout << "x:" << x << " y:" << y << " width:" << width << " height:" << height << "\n";
     cv::Mat cutFrame = frame(cv::Rect(x, y, width, height));
-    cv::imshow("cutFrame", cutFrame);
+    //デバッグ用切り取りフレーム表示
+    //cv::imshow("cutFrame", cutFrame);
 
     // テンプレートと，それに重なった画像領域とを比較
     cv::Mat result;
@@ -177,6 +178,8 @@ void ObjectTracker::trackPatternMatchingInternal(cv::Mat &frame, cv::Mat &target
     // ptは、カットした画像から位置を求めているため、元の画像の座標に戻す
     pt.x += x;
     pt.y += y;
+
+    showXYPosition(frame, pt);
 
     //TODO:とりあえず左上の座標を出しているが、本来は中心点を求めるべき。
     //cv::Point targetPoint = pt + cv::Point(targetImage.cols, targetImage.rows);
@@ -199,6 +202,18 @@ void ObjectTracker::trackPatternMatchingInternal(cv::Mat &frame, cv::Mat &target
     // 次回の探索を覚えるため、位置を記憶
     x = pt.x;
     y = pt.y;
+}
+
+void ObjectTracker::showXYPosition(cv::Mat& frame, cv::Point& pt)
+{
+    if (!objectTrackSetting.enableShowXYPosition)
+    {
+        //設定OFFなら表示しない
+        return;
+    }
+    cv::Scalar stringColor = cv::Scalar(255, 255, 255);   //文字色
+    std::string printString = "X:" + std::to_string(pt.x) + " Y:" + std::to_string(pt.y);
+    cv::putText(frame, printString, cv::Point(5, 30), cv::FONT_HERSHEY_SIMPLEX, 1, stringColor);
 }
 
 void ObjectTracker::trackObject(cv::VideoCapture cap)

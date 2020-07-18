@@ -7,11 +7,16 @@
 class ObjectTrackSetting
 {
 public:
+	///////////////////////////////////
+	// 物体追跡の設定
+	///////////////////////////////////
+
+	// 物体追跡アルゴリズムON/OFF
 	bool enableTrackKcf = true;
-	bool enableTrackTld = true;
-	bool enableTrackMedianFlow = true;
-	bool enableTrackBoosting = true;
-	bool enableTrackMil = true;
+	bool enableTrackTld = false;
+	bool enableTrackMedianFlow = false;
+	bool enableTrackBoosting = false;
+	bool enableTrackMil = false;
 
 	// 物体追跡方法
 	enum class ETrackingMode {
@@ -20,8 +25,16 @@ public:
 	};
 	ETrackingMode trackingMode = ETrackingMode::E_PATARN_MATCH;
 
+
 	//ターゲット画像ファイルパス
 	std::string targetFilePath = "C:\\work\\OpenCV\\contents\\追跡対象.png";
+
+	///////////////////////////////////
+	// パターンマッチングの設定
+	///////////////////////////////////
+	// 座標表示ON/OFF
+	bool enableShowXYPosition = true;
+
 	// パターンマッチングの手法
 	int matchMeathod = CV_TM_SQDIFF_NORMED;
 

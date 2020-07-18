@@ -34,7 +34,7 @@ private:
 	//パターンマッチング
 	TargetInfo trackPatternMatching(cv::VideoCapture cap);
 	void trackPatternMatchingInternal(cv::Mat &frame, cv::Mat &targetImage);
-
+	void showXYPosition(cv::Mat& frame, cv::Point& pt);
 
 	// 物体追跡
 	void trackObject(cv::VideoCapture cap);
