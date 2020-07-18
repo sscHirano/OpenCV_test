@@ -80,7 +80,6 @@ TargetInfo ObjectTracker::trackPatternMatching(cv::VideoCapture cap)
         frame = frame(cv::Rect(cutLeft, cutTop, frame.cols - cutLeft - cutRight, frame.rows - cutTop - cutBottom));
 
         trackPatternMatchingInternal(frame, targetImage);
-
         //動画保存
         writeVideo(writer, frame);
 
@@ -161,14 +160,16 @@ void ObjectTracker::trackPatternMatchingInternal(cv::Mat &frame, cv::Mat &target
     //cv::imshow("cutFrame", cutFrame);
 
     //元画像、対象画像を共に2値化
-    convertColor2Monochrome(cutFrame);
-    //convertColor2Monochrome(targetImage);       //TODO:ターゲットイメージは毎回同じ画像なので、これを毎回2値化するのは無駄。
+    cv::Mat binFrame = convertColor2Monochrome(cutFrame);
+    cv::Mat binTaget = convertColor2Monochrome(targetImage);       //TODO:ターゲットイメージは毎回同じ画像なので、これを毎回2値化するのは無駄。
+    //デバッグ用切り取りフレーム表示
+    cv::imshow("cutFrame(2)", binFrame);
 
     // テンプレートと，それに重なった画像領域とを比較
     cv::Mat result;
     cv::matchTemplate(
-        cutFrame,               // テンプレートの探索対象となる画像．8ビットまたは32ビットの浮動小数点型．
-        targetImage,         // 探索されるテンプレート．探索対象となる画像以下のサイズで，同じデータ型でなければならない
+        binFrame,               // テンプレートの探索対象となる画像．8ビットまたは32ビットの浮動小数点型．
+        binTaget,         // 探索されるテンプレート．探索対象となる画像以下のサイズで，同じデータ型でなければならない
         result,              // 比較結果のマップ
         objectTrackSetting.matchMeathod  // 比較手法
         );
@@ -216,14 +217,18 @@ cv::Mat ObjectTracker::convertColor2Monochrome(cv::Mat& image)
 {
     cv::Mat gray_img;
     cv::Mat bin_img;
+    //グレースケールへ変換
     cvtColor(image, gray_img, CV_BGR2GRAY);
+
+    if (gray_img.size == 0) {
+        std::cout << "Fail convert gray scale\n";
+        return image;
+    }
+
+    //グレースケールから2値化
 //    threshold(gray_img, bin_img, 160, 255, cv::THRESH_BINARY);                    // 160を閾値に2値化
     threshold(gray_img, bin_img, 0, 255, cv::THRESH_BINARY | cv::THRESH_OTSU);    // 自動で閾値を決めて2値化
 
-    //デバッグ用2値化画像表示
-    cv::imshow("monochromeFrame", bin_img);
-
-//    bin_img.copyTo(image);
     return bin_img;
 }
 
