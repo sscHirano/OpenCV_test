@@ -36,6 +36,9 @@ private:
 	void trackPatternMatchingInternal(cv::Mat &frame, cv::Mat &targetImage);
 	void showXYPosition(cv::Mat& frame, cv::Point& pt);
 
+	// パターンマッチング(2値化)
+	cv::Mat convertColor2Monochrome(cv::Mat& image);
+
 	// 物体追跡
 	void trackObject(cv::VideoCapture cap);
 	void update(cv::Ptr<cv::Tracker> tracker, cv::Mat& frame, cv::Rect2d& roi, cv::Scalar& colorkcf);

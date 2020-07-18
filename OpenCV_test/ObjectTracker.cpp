@@ -160,6 +160,10 @@ void ObjectTracker::trackPatternMatchingInternal(cv::Mat &frame, cv::Mat &target
     //デバッグ用切り取りフレーム表示
     //cv::imshow("cutFrame", cutFrame);
 
+    //元画像、対象画像を共に2値化
+    convertColor2Monochrome(cutFrame);
+    //convertColor2Monochrome(targetImage);       //TODO:ターゲットイメージは毎回同じ画像なので、これを毎回2値化するのは無駄。
+
     // テンプレートと，それに重なった画像領域とを比較
     cv::Mat result;
     cv::matchTemplate(
@@ -202,6 +206,25 @@ void ObjectTracker::trackPatternMatchingInternal(cv::Mat &frame, cv::Mat &target
     // 次回の探索を覚えるため、位置を記憶
     x = pt.x;
     y = pt.y;
+}
+
+/*
+二値化
+グレースケールに変換してから2値化する。
+*/
+cv::Mat ObjectTracker::convertColor2Monochrome(cv::Mat& image)
+{
+    cv::Mat gray_img;
+    cv::Mat bin_img;
+    cvtColor(image, gray_img, CV_BGR2GRAY);
+//    threshold(gray_img, bin_img, 160, 255, cv::THRESH_BINARY);                    // 160を閾値に2値化
+    threshold(gray_img, bin_img, 0, 255, cv::THRESH_BINARY | cv::THRESH_OTSU);    // 自動で閾値を決めて2値化
+
+    //デバッグ用2値化画像表示
+    cv::imshow("monochromeFrame", bin_img);
+
+//    bin_img.copyTo(image);
+    return bin_img;
 }
 
 void ObjectTracker::showXYPosition(cv::Mat& frame, cv::Point& pt)
